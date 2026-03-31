@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Flutter Dev — Test Task</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f8f7f4;
+  --white: #ffffff;
+  --ink: #0f0f0f;
+  --ink2: #2e2e2e;
+  --muted: #777;
+  --border: #e3e1dc;
+  --flutter: #027DFD;
+  --flutter-soft: rgba(2,125,253,0.08);
+  --flutter-border: rgba(2,125,253,0.22);
+  --green: #00b87a;
+  --green-soft: rgba(0,184,122,0.08);
+  --amber: #e8960a;
+  --amber-soft: rgba(232,150,10,0.08);
+  --red: #e8414a;
+  --red-soft: rgba(232,65,74,0.08);
+  --purple: #7c5cbf;
+  --purple-soft: rgba(124,92,191,0.08);
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--ink);
+  color: #fff;
+  padding: 48px 64px;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 320px; height: 320px;
+  background: radial-gradient(circle, rgba(2,125,253,0.25) 0%, transparent 70%);
+}
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  position: relative;
+}
+.company-tag {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--flutter);
+  letter-spacing: 0.05em;
+}
+.deadline-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.deadline-badge .label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #888;
+}
+.deadline-badge .value {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+}
+.deadline-badge .sub {
+  font-size: 12px;
+  color: #888;
+}
+.header h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -1.5px;
+  margin-bottom: 12px;
+  position: relative;
+}
+.header h1 span { color: var(--flutter); }
+.header p {
+  font-size: 16px;
+  color: #aaa;
+  max-width: 560px;
+  font-weight: 300;
+}
+.meta-row {
+  display: flex;
+  gap: 24px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+  position: relative;
+}
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #888;
+}
+.meta-item strong { color: #ccc; font-weight: 500; }
+.meta-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--flutter); }
+
+/* ── BODY ── */
+.body { max-width: 860px; margin: 0 auto; padding: 56px 48px; }
+
+/* ── SECTION ── */
+.section { margin-bottom: 48px; }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.section-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+}
+.section-header h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* ── OVERVIEW CARD ── */
+.overview-card {
+  background: var(--flutter-soft);
+  border: 1px solid var(--flutter-border);
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+}
+.overview-card p {
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.75;
+}
+.overview-card p + p { margin-top: 10px; }
+
+/* ── TASK CARD ── */
+.task-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.task-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+}
+.task-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 2px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.task-header h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  flex: 1;
+}
+.task-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+.task-body { padding: 18px 22px; }
+.task-body p {
+  font-size: 13.5px;
+  color: var(--ink2);
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+.task-list { list-style: none; }
+.task-list li {
+  font-size: 13px;
+  color: var(--ink2);
+  padding: 5px 0 5px 20px;
+  position: relative;
+  border-bottom: 1px solid #f4f3f0;
+  line-height: 1.6;
+}
+.task-list li:last-child { border-bottom: none; }
+.task-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--muted);
+  font-size: 11px;
+  top: 7px;
+}
+.task-list li strong { color: var(--ink); font-weight: 500; }
+
+/* ── CODE BLOCK ── */
+.code-block {
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 14px 0;
+  overflow-x: auto;
+}
+.code-block code {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: #c8c8c8;
+  line-height: 1.8;
+  display: block;
+  white-space: pre;
+}
+.code-block code .c-blue { color: #79b8ff; }
+.code-block code .c-green { color: #85e89d; }
+.code-block code .c-yellow { color: #ffea7f; }
+.code-block code .c-muted { color: #555; }
+
+/* ── SCREEN SPEC TABLE ── */
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.spec-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 8px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+.spec-table td {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  vertical-align: top;
+  color: var(--ink2);
+  line-height: 1.5;
+}
+.spec-table tr:nth-child(even) td { background: #fafaf8; }
+.screen-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--flutter);
+}
+
+/* ── EVALUATION TABLE ── */
+.eval-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.eval-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 9px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+.eval-table td {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  vertical-align: middle;
+  line-height: 1.5;
+}
+.eval-table tr:nth-child(even) td { background: #fafaf8; }
+.pts {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--flutter);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ── RULES BOX ── */
+.rules-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.rule-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+.rule-card .rule-icon { font-size: 18px; margin-bottom: 8px; display: block; }
+.rule-card h4 {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--ink);
+}
+.rule-card p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* ── SUBMISSION BOX ── */
+.submit-box {
+  background: var(--ink);
+  color: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  margin-top: 12px;
+}
+.submit-box h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.submit-box p { font-size: 14px; color: #999; margin-bottom: 20px; }
+.submit-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.submit-list li {
+  font-size: 13px;
+  color: #ccc;
+  padding-left: 18px;
+  position: relative;
+}
+.submit-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--flutter);
+  font-weight: 700;
+}
+
+/* ── TIMELINE ── */
+.timeline { display: flex; gap: 0; margin: 8px 0; }
+.tl-item {
+  flex: 1;
+  padding: 16px 18px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  position: relative;
+}
+.tl-item:first-child { border-radius: 12px 0 0 12px; }
+.tl-item:last-child { border-radius: 0 12px 12px 0; }
+.tl-item + .tl-item { border-left: none; }
+.tl-day {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.tl-item h4 {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.tl-item p { font-size: 12px; color: var(--muted); }
+
+@media (max-width: 700px) {
+  .header { padding: 36px 24px; }
+  .header h1 { font-size: 32px; }
+  .body { padding: 36px 20px; }
+  .rules-grid { grid-template-columns: 1fr; }
+  .timeline { flex-direction: column; }
+  .tl-item { border-radius: 0 !important; border-left: 1px solid var(--border) !important; }
+  .tl-item:first-child { border-radius: 12px 12px 0 0 !important; }
+  .tl-item:last-child { border-radius: 0 0 12px 12px !important; border-top: none !important; }
+  .header-top { flex-direction: column; gap: 20px; }
+  .deadline-badge { align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="company-tag">Taskpilot · Flutter Developer Assessment</div>
+    </div>
+    <div class="deadline-badge">
+      <span class="label">⏱ Deadline</span>
+      <span class="value">48 Hours</span>
+      <span class="sub">From date of receiving this task</span>
+    </div>
+  </div>
+  <h1>Flutter Dev<br/><span>Test Task</span></h1>
+  <p>Build a mini version of the Taskpilot field operations mobile app. We evaluate your code quality, Flutter skills, and how you think.</p>
+  <div class="meta-row">
+    <div class="meta-item"><div class="meta-dot"></div><strong>Role:</strong> Flutter Developer</div>
+    <div class="meta-item"><div class="meta-dot"></div><strong>Experience:</strong> 1 Year</div>
+    <div class="meta-item"><div class="meta-dot"></div><strong>Platform:</strong> Android + iOS (Flutter)</div>
+    <div class="meta-item"><div class="meta-dot"></div><strong>Duration:</strong> 2 Days</div>
+  </div>
+</div>
+
+<div class="body">
+
+  <!-- OVERVIEW -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">00</span>
+      <h2>What is Taskpilot?</h2>
+    </div>
+    <div class="overview-card">
+      <p>Taskpilot is a field operations platform used in the diamond and parcel logistics industry. It connects three types of users — <strong>Admin</strong> (web panel), <strong>Parties</strong> (business clients), and <strong>Employees</strong> (field workers).</p>
+      <p>The mobile app is used by Employees and Parties. Parties create pickup/delivery requests. Employees receive notifications, accept nearby jobs, go to the party location, collect payments, upload photos, and handle document signing — all from their phone.</p>
+      <p>Your task is to build a <strong>working mini version</strong> of this app covering the core request flow.</p>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>Timeline</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-day">Day 0 — Start</div>
+        <h4>Receive Task</h4>
+        <p>Read carefully, plan your screens and state management approach.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-day">Day 1 — Build</div>
+        <h4>Core Screens</h4>
+        <p>Login, Request List, Create Request, and Request Detail with status.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-day">Day 2 — Polish</div>
+        <h4>Finish + Submit</h4>
+        <p>Photo upload, UI polish, README, push to GitHub before deadline.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK BREAKDOWN -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>Task Breakdown</h2>
+    </div>
+
+    <!-- TASK 1 -->
+    <div class="task-card">
+      <div class="task-header">
+        <span class="task-num">T-01</span>
+        <h3>Login Screen — Two Roles</h3>
+        <span class="task-tag" style="background:var(--flutter-soft);color:var(--flutter);border:1px solid var(--flutter-border)">Required</span>
+      </div>
+      <div class="task-body">
+        <p>Build a login screen that supports two user roles — <strong>Employee</strong> and <strong>Party</strong>. After login, the app should navigate to the correct home screen based on the role.</p>
+        <ul class="task-list">
+          <li><strong>Username + Password</strong> fields with basic validation (empty check)</li>
+          <li><strong>Role selector</strong> — toggle or dropdown to choose Employee or Party</li>
+          <li>On login, store the role in local state (Provider / Riverpod / Bloc — your choice)</li>
+          <li>Employee → goes to <strong>Request List screen</strong></li>
+          <li>Party → goes to <strong>Create Request screen</strong></li>
+          <li>No real API needed — use <strong>hardcoded mock credentials</strong></li>
+          <li>Show a loading indicator on button tap for at least 1 second before navigating</li>
+        </ul>
+        <div class="code-block"><code><span class="c-muted">// Mock credentials to use</span>
+<span class="c-yellow">Employee:</span>  username: <span class="c-green">"emp1"</span>  password: <span class="c-green">"1234"</span>
+<span class="c-yellow">Party:</span>     username: <span class="c-green">"party1"</span>  password: <span class="c-green">"1234"</span></code></div>
+      </div>
+    </div>
+
+    <!-- TASK 2 -->
+    <div class="task-card">
+      <div class="task-header">
+        <span class="task-num">T-02</span>
+        <h3>Party — Create a Request</h3>
+        <span class="task-tag" style="background:var(--flutter-soft);color:var(--flutter);border:1px solid var(--flutter-border)">Required</span>
+      </div>
+      <div class="task-body">
+        <p>When logged in as a Party, they should be able to create a new service request. Request type is always <strong>Pick</strong> for parties.</p>
+        <ul class="task-list">
+          <li>Form with <strong>Party Name</strong> (pre-filled from login), <strong>Date & Time picker</strong>, and optional <strong>Note</strong> field</li>
+          <li>Request type is fixed as <strong>"Pick"</strong> — show it as a read-only label</li>
+          <li>On submit, add the request to a <strong>local list</strong> (in-memory, no backend needed)</li>
+          <li>New request should have status: <strong>Pending</strong></li>
+          <li>Show a <strong>success snackbar or dialog</strong> after submission</li>
+          <li>After submit, show a <strong>My Requests</strong> list below with the created requests and their status chips</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- TASK 3 -->
+    <div class="task-card">
+      <div class="task-header">
+        <span class="task-num">T-03</span>
+        <h3>Employee — Request List & Accept</h3>
+        <span class="task-tag" style="background:var(--flutter-soft);color:var(--flutter);border:1px solid var(--flutter-border)">Required</span>
+      </div>
+      <div class="task-body">
+        <p>When logged in as an Employee, show a list of all available requests. Employee can accept a Pending request.</p>
+        <ul class="task-list">
+          <li>Show a <strong>list of mock requests</strong> (preload at least 3 dummy requests with different statuses)</li>
+          <li>Each list item shows: <strong>Party name, Request type, Date/Time, Status chip</strong></li>
+          <li>Status chips with colors — <strong>Pending</strong> (amber), <strong>Accepted</strong> (blue), <strong>Completed</strong> (green)</li>
+          <li>Tap on a Pending request → show <strong>Accept button</strong> on detail screen</li>
+          <li>On Accept → status updates to <strong>Accepted</strong> in the list (real-time UI update)</li>
+          <li>Accepted request shows <strong>employee name</strong> who accepted it</li>
+          <li>Add a <strong>filter bar</strong> at the top — All / Pending / Accepted / Completed</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- TASK 4 -->
+    <div class="task-card">
+      <div class="task-header">
+        <span class="task-num">T-04</span>
+        <h3>Employee — Complete Request with Photo</h3>
+        <span class="task-tag" style="background:var(--flutter-soft);color:var(--flutter);border:1px solid var(--flutter-border)">Required</span>
+      </div>
+      <div class="task-body">
+        <p>On an Accepted request, the employee should be able to take or upload a photo and mark it as Complete — simulating the on-site parcel photo capture.</p>
+        <ul class="task-list">
+          <li>On the Request Detail screen, show a <strong>"Complete Request"</strong> button (only if status = Accepted)</li>
+          <li>On tap — open a bottom sheet or dialog with option to <strong>Take Photo</strong> or <strong>Pick from Gallery</strong></li>
+          <li>Use <strong>image_picker</strong> package for this</li>
+          <li>Show a <strong>preview of the selected image</strong> in the bottom sheet</li>
+          <li>On confirm — update status to <strong>Completed</strong> and display the image thumbnail on the detail screen</li>
+          <li>Show a success message after marking complete</li>
+        </ul>
+        <div class="code-block"><code><span class="c-muted">// Suggested packages</span>
+<span class="c-blue">image_picker:</span> <span class="c-green">^1.0.0</span>   <span class="c-muted"># camera + gallery</span>
+<span class="c-blue">provider:</span>    <span class="c-green">^6.0.0</span>   <span class="c-muted"># or riverpod — state mgmt</span>
+<span class="c-blue">intl:</span>        <span class="c-green">^0.18.0</span>  <span class="c-muted"># date formatting</span></code></div>
+      </div>
+    </div>
+
+    <!-- TASK 5 -->
+    <div class="task-card">
+      <div class="task-header">
+        <span class="task-num">T-05</span>
+        <h3>Bill View Screen (Bonus)</h3>
+        <span class="task-tag" style="background:var(--green-soft);color:var(--green);border:1px solid rgba(0,184,122,0.25)">Bonus</span>
+      </div>
+      <div class="task-body">
+        <p>Build a simple Bill screen accessible from the Employee home. This is a bonus task — do it only if T-01 to T-04 are solid.</p>
+        <ul class="task-list">
+          <li>Show a <strong>list of mock bills</strong> — party name, amount, kasar (balance), status</li>
+          <li>Status options: <strong>Pending, Taken, Accepted</strong> with colored chips</li>
+          <li>Tap on a bill → show a <strong>detail view</strong> with collected amount field</li>
+          <li>A <strong>"Mark as Taken"</strong> button that updates status</li>
+          <li>Bonus extra: Add a <strong>Share button</strong> that uses the <strong>share_plus</strong> package to share the bill text to WhatsApp or any app</li>
+        </ul>
+        <div class="code-block"><code><span class="c-muted">// Bonus package</span>
+<span class="c-blue">share_plus:</span> <span class="c-green">^7.0.0</span>  <span class="c-muted"># share bill text / simulate WhatsApp send</span></code></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SCREEN SPECS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>Required Screens Summary</h2>
+    </div>
+    <table class="spec-table">
+      <thead>
+        <tr>
+          <th>Screen</th>
+          <th>Role</th>
+          <th>Key Elements</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="screen-name">LoginScreen</span></td>
+          <td>Both</td>
+          <td>Username, Password, Role selector, Login button</td>
+          <td><span class="task-tag" style="background:var(--flutter-soft);color:var(--flutter);border:1px solid var(--flutter-border)">Required</span></td>
+        </tr>
+        <tr>
+          <td><span class="screen-name">CreateRequestScreen</span></td>
+          <td>Party</td>
+          <td>Party name, Date/time picker, Note, Submit button</td>
+          <td><span class="task-tag" style="background:var(--flutter-soft);color:var(--flutter);border:1px solid var(--flutter-border)">Required</span></td>
+        </tr>
+        <tr>
+          <td><span class="screen-name">MyRequestsScreen</span></td>
+          <td>Party</td>
+          <td>List of own requests with status chips</td>
+          <td><span class="task-tag" style="background:var(--flutter-soft);color:var(--flutter);border:1px solid var(--flutter-border)">Required</span></td>
+        </tr>
+        <tr>
+          <td><span class="screen-name">RequestListScreen</span></td>
+          <td>Employee</td>
+          <td>Request list, filter bar, status chips</td>
+          <td><span class="task-tag" style="background:var(--flutter-soft);color:var(--flutter);border:1px solid var(--flutter-border)">Required</span></td>
+        </tr>
+        <tr>
+          <td><span class="screen-name">RequestDetailScreen</span></td>
+          <td>Employee</td>
+          <td>Full request info, Accept / Complete button, photo preview</td>
+          <td><span class="task-tag" style="background:var(--flutter-soft);color:var(--flutter);border:1px solid var(--flutter-border)">Required</span></td>
+        </tr>
+        <tr>
+          <td><span class="screen-name">BillListScreen</span></td>
+          <td>Employee</td>
+          <td>Mock bills list, status chips, mark taken</td>
+          <td><span class="task-tag" style="background:var(--green-soft);color:var(--green);border:1px solid rgba(0,184,122,0.25)">Bonus</span></td>
+        </tr>
+        <tr>
+          <td><span class="screen-name">BillDetailScreen</span></td>
+          <td>Employee</td>
+          <td>Bill detail, collected amount, share button</td>
+          <td><span class="task-tag" style="background:var(--green-soft);color:var(--green);border:1px solid rgba(0,184,122,0.25)">Bonus</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TECH REQUIREMENTS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>Technical Requirements</h2>
+    </div>
+    <div class="rules-grid">
+      <div class="rule-card">
+        <span class="rule-icon">🏗</span>
+        <h4>State Management</h4>
+        <p>Use Provider, Riverpod, or Bloc. No raw setState across screens. We want to see how you manage shared app state.</p>
+      </div>
+      <div class="rule-card">
+        <span class="rule-icon">📁</span>
+        <h4>Folder Structure</h4>
+        <p>Separate screens, models, providers/controllers, and widgets into clean folders. We check project organisation.</p>
+      </div>
+      <div class="rule-card">
+        <span class="rule-icon">🎨</span>
+        <h4>UI Quality</h4>
+        <p>No default Flutter blue. Pick a clean theme. Proper padding, consistent font sizes, status chip colors. It should feel like a real product.</p>
+      </div>
+      <div class="rule-card">
+        <span class="rule-icon">📱</span>
+        <h4>No Backend Required</h4>
+        <p>All data is in-memory / mock. No API calls needed. Focus on the Flutter code, UI, and state — not the backend.</p>
+      </div>
+      <div class="rule-card">
+        <span class="rule-icon">📝</span>
+        <h4>README</h4>
+        <p>Include a README with: how to run the app, what you built, which state management you used, and any known issues.</p>
+      </div>
+      <div class="rule-card">
+        <span class="rule-icon">⚡</span>
+        <h4>Performance</h4>
+        <p>No unnecessary rebuilds. Use const where possible. List screens should use ListView.builder, not Column with children.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVALUATION -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>How We Evaluate</h2>
+    </div>
+    <table class="eval-table">
+      <thead>
+        <tr>
+          <th>Criteria</th>
+          <th>What we look for</th>
+          <th style="text-align:center">Points</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Functionality</strong></td>
+          <td>All 4 required tasks working correctly end-to-end</td>
+          <td class="pts">35 pts</td>
+        </tr>
+        <tr>
+          <td><strong>Code Quality</strong></td>
+          <td>Clean, readable code. Proper naming. No dead code. Separation of concerns.</td>
+          <td class="pts">25 pts</td>
+        </tr>
+        <tr>
+          <td><strong>UI & UX</strong></td>
+          <td>Consistent theme, proper spacing, status colors, loading states, error feedback</td>
+          <td class="pts">20 pts</td>
+        </tr>
+        <tr>
+          <td><strong>State Management</strong></td>
+          <td>Correct use of chosen state solution. No prop-drilling. Reactive updates.</td>
+          <td class="pts">15 pts</td>
+        </tr>
+        <tr>
+          <td><strong>README & Structure</strong></td>
+          <td>Clear README, clean folder structure, sensible commit messages</td>
+          <td class="pts">5 pts</td>
+        </tr>
+        <tr>
+          <td><strong>Bonus Task</strong></td>
+          <td>Bill screen with share functionality working cleanly</td>
+          <td class="pts">+10 pts</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SUBMISSION -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>Submission</h2>
+    </div>
+    <div class="submit-box">
+      <h3>Submit within 48 hours</h3>
+      <p>Push your code to a public GitHub repository and share the link. Make sure it runs on a fresh clone.</p>
+      <ul class="submit-list">
+        <li>Public GitHub repository link</li>
+        <li>README.md with setup instructions</li>
+        <li>App runs with <code style="font-family:'DM Mono',monospace;font-size:12px;color:#79b8ff">flutter run</code> without errors</li>
+        <li>At minimum — tested on Android emulator or real device</li>
+        <li>If bonus task done — mention it clearly in README</li>
+        <li>Optional: screen recording (Loom or MP4) showing the app flow</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
