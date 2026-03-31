@@ -49,12 +49,12 @@ class _BillListScreenState extends State<BillListScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Bill ${bill.id}", style: GoogleFonts.poppins(fontWeight: FontWeight.w400, color: const Color(0xFF9CA3AF))),
+                      Text("Bill ${bill.id}", style: GoogleFonts.poppins(fontWeight: FontWeight.w400, color: const Color(0xFFB0A09A))),
                       _buildBillStatus(bill.status),
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Text(bill.partyName, style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 20, color: const Color(0xFF1F2937))),
+                  Text(bill.partyName, style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 20, color: const Color(0xFF2D201A))),
                   const SizedBox(height: 24),
                   Container(
                     padding: const EdgeInsets.all(20),
@@ -63,7 +63,7 @@ class _BillListScreenState extends State<BillListScreen> {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFD1D9E6).withOpacity(0.5),
+                          color: const Color(0xFFCEBFB8).withOpacity(0.55),
                           offset: const Offset(0, 8),
                           blurRadius: 16,
                         )
@@ -75,17 +75,17 @@ class _BillListScreenState extends State<BillListScreen> {
                          Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Amount", style: GoogleFonts.poppins(color: const Color(0xFF6B7280), fontSize: 13, fontWeight: FontWeight.w300)),
+                            Text("Amount", style: GoogleFonts.poppins(color: const Color(0xFF8B7468), fontSize: 13, fontWeight: FontWeight.w300)),
                             const SizedBox(height: 4),
-                            Text("₹${bill.amount > 0 ? bill.amount : '-'}", style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 18, color: const Color(0xFF374151))),
+                            Text("₹${bill.amount > 0 ? bill.amount : '-'}", style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 18, color: const Color(0xFF2D201A))),
                           ],
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text("Discount", style: GoogleFonts.poppins(color: const Color(0xFF6B7280), fontSize: 13, fontWeight: FontWeight.w300)),
+                            Text("Discount", style: GoogleFonts.poppins(color: const Color(0xFF8B7468), fontSize: 13, fontWeight: FontWeight.w300)),
                             const SizedBox(height: 4),
-                            Text("₹${bill.kasar > 0 ? bill.kasar : '-'}", style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 18, color: const Color(0xFF374151))),
+                            Text("₹${bill.kasar > 0 ? bill.kasar : '-'}", style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 18, color: const Color(0xFF2D201A))),
                           ],
                         )
                       ],
@@ -103,9 +103,9 @@ class _BillListScreenState extends State<BillListScreen> {
   Widget _buildBillStatus(BillStatus status) {
     Color color;
     switch (status) {
-      case BillStatus.pending: color = const Color(0xFFE8960A); break;
+      case BillStatus.pending: color = const Color(0xFFE89A35); break;
       case BillStatus.taken: color = Theme.of(context).primaryColor; break;
-      case BillStatus.accepted: color = const Color(0xFF10B981); break;
+      case BillStatus.accepted: color = const Color(0xFF5B9E7A); break;
     }
 
     return Container(

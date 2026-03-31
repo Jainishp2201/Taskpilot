@@ -1,228 +1,255 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../providers/auth_provider.dart';
 import '../providers/task_provider.dart';
 import '../models/request_model.dart';
-import '../widgets/status_chip.dart';
 import '../widgets/clay_container.dart';
-import 'request_detail_screen.dart';
+import 'filtered_requests_screen.dart';
 
-class EmployeeHomeScreen extends StatefulWidget {
+class EmployeeHomeScreen extends StatelessWidget {
   const EmployeeHomeScreen({super.key});
-
-  @override
-  State<EmployeeHomeScreen> createState() => _EmployeeHomeScreenState();
-}
-
-class _EmployeeHomeScreenState extends State<EmployeeHomeScreen> {
-  RequestStatus? _currentFilter;
 
   @override
   Widget build(BuildContext context) {
     final auth = context.read<AuthProvider>();
     final taskProvider = context.watch<TaskProvider>();
-    final requests = taskProvider.getFilteredRequests(_currentFilter);
-    final pendingCount = taskProvider.requests.where((r) => r.status == RequestStatus.pending).length;
-    final acceptedCount = taskProvider.requests.where((r) => r.status == RequestStatus.accepted).length;
+    
+    final pendingCount =
+        taskProvider.requests.where((r) => r.status == RequestStatus.pending).length;
+    final acceptedCount =
+        taskProvider.requests.where((r) => r.status == RequestStatus.accepted).length;
+    final completedCount =
+        taskProvider.requests.where((r) => r.status == RequestStatus.completed).length;
+    final allCount = taskProvider.requests.length;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(28, 60, 28, 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Hello, ${auth.user?.username ?? 'Employee'}.", 
-                  style: GoogleFonts.poppins(fontSize: 36, fontWeight: FontWeight.w300, color: const Color(0xFF1F2937), letterSpacing: -1.0)),
-              const SizedBox(height: 8),
-              Text("Overview of your field tasks", 
-                  style: GoogleFonts.poppins(color: const Color(0xFF6B7280), fontSize: 16, fontWeight: FontWeight.w300)),
-              
-              const SizedBox(height: 36),
-              
-              // New asymmetrical stats layout
-              Row(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: _buildStatCard("Pending Tasks", pendingCount, const Color(0xFFE8960A)),
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // ── Header ──────────────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(28, 56, 28, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Hello,",
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w300,
+                    color: const Color(0xFF8B7468),
+                    letterSpacing: 0.5,
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    flex: 2,
-                    child: _buildStatCard("Active", acceptedCount, Theme.of(context).primaryColor),
+                ),
+                Text(
+                  "${auth.user?.username ?? 'Employee'}.",
+                  style: GoogleFonts.poppins(
+                    fontSize: 38,
+                    fontWeight: FontWeight.w200,
+                    color: const Color(0xFF2D201A),
+                    letterSpacing: -1.5,
+                    height: 1.1,
                   ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        
-        _buildFilterBar(),
-        
-        Expanded(
-          child: requests.isEmpty 
-            ? _buildEmptyState() 
-            : ListView.builder(
-                padding: const EdgeInsets.fromLTRB(24, 10, 24, 100),
-                itemCount: requests.length,
-                itemBuilder: (context, index) {
-                  final req = requests[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 24),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          PageRouteBuilder(
-                            pageBuilder: (context, animation, secondaryAnimation) => RequestDetailScreen(requestId: req.id),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              var curve = Curves.easeOutCirc;
-                              var tween = Tween(begin: const Offset(1.0, 0.0), end: Offset.zero).chain(CurveTween(curve: curve));
-                              return SlideTransition(position: animation.drive(tween), child: child);
-                            },
-                          )
-                        );
-                      },
-                      child: ClayContainer(
-                        depth: 6,
-                        padding: const EdgeInsets.all(28),
-                        borderRadius: 30,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(req.partyName, 
-                                          style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 20, color: const Color(0xFF1F2937))),
-                                      const SizedBox(height: 4),
-                                      Text(DateFormat('MMM dd • hh:mm a').format(req.dateTime), 
-                                        style: GoogleFonts.poppins(color: const Color(0xFF9CA3AF), fontSize: 14, fontWeight: FontWeight.w300)),
-                                    ],
-                                  ),
-                                ),
-                                StatusChip(status: req.status),
-                              ],
-                            ),
-                            if (req.acceptedBy != null) ...[
-                                const SizedBox(height: 24),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white, 
-                                    borderRadius: BorderRadius.circular(16),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color(0xFFD1D9E6).withOpacity(0.5),
-                                        offset: const Offset(0, 4),
-                                        blurRadius: 10,
-                                      )
-                                    ],
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(Icons.person_outline_rounded, size: 18, color: Theme.of(context).primaryColor),
-                                      const SizedBox(width: 8),
-                                      Text(req.acceptedBy!, 
-                                          style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w400, color: Theme.of(context).primaryColor)),
-                                    ],
-                                  ),
-                                ),
-                            ],
-                          ],
-                        ),
+                ),
+                const SizedBox(height: 36),
+
+                // ── Asymmetric Stats Row ──────────────────────────────────────
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Large tall card — Pending
+                    Expanded(
+                      flex: 5,
+                      child: _buildStatCard(
+                        context,
+                        title: "Pending",
+                        count: pendingCount,
+                        color: const Color(0xFFE89A35),
+                        icon: Icons.access_time_rounded,
+                        tall: true,
+                        filter: RequestStatus.pending,
                       ),
                     ),
-                  );
-                },
+                    const SizedBox(width: 14),
+                    // Two stacked smaller cards
+                    Expanded(
+                      flex: 4,
+                      child: Column(
+                        children: [
+                          _buildStatCard(
+                            context,
+                            title: "Active",
+                            count: acceptedCount,
+                            color: const Color(0xFFE8734A),
+                            icon: Icons.bolt_rounded,
+                            tall: false,
+                            filter: RequestStatus.accepted,
+                          ),
+                          const SizedBox(height: 14),
+                          _buildStatCard(
+                            context,
+                            title: "Done",
+                            count: completedCount,
+                            color: const Color(0xFF5B9E7A),
+                            icon: Icons.check_circle_outline_rounded,
+                            tall: false,
+                            filter: RequestStatus.completed,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+
+                // ── Broad "All Tasks" Container ──────────────────────────────
+                GestureDetector(
+                  onTap: () => _openFilteredScreen(
+                    context,
+                    title: "All Tasks",
+                    filter: null,
+                  ),
+                  child: ClayContainer(
+                    depth: 6,
+                    borderRadius: 24,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF2D201A).withOpacity(0.08),
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: const Icon(Icons.apps_rounded, color: Color(0xFF2D201A), size: 24),
+                            ),
+                            const SizedBox(width: 18),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "All Tasks",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
+                                    color: const Color(0xFF2D201A),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  "View complete history",
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 13,
+                                    color: const Color(0xFF8B7468),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF2D201A),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            allCount.toString(),
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 120), // Bottom padding for navigation dock
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Helper: Stat Card Button ─────────────────────────────────────────────
+  Widget _buildStatCard(
+    BuildContext context, {
+    required String title,
+    required int count,
+    required Color color,
+    required IconData icon,
+    required bool tall,
+    required RequestStatus filter,
+  }) {
+    return GestureDetector(
+      onTap: () => _openFilteredScreen(context, title: "$title Tasks", filter: filter),
+      child: ClayContainer(
+        depth: 4,
+        borderRadius: 24,
+        padding: EdgeInsets.symmetric(
+          vertical: tall ? 32 : 20,
+          horizontal: 20,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(12),
               ),
+              child: Icon(icon, color: color, size: tall ? 22 : 18),
+            ),
+            SizedBox(height: tall ? 28 : 16),
+            Text(
+              count.toString(),
+              style: GoogleFonts.poppins(
+                fontSize: tall ? 44 : 32,
+                fontWeight: FontWeight.w200,
+                color: color,
+                height: 1.0,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              title,
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w300,
+                fontSize: tall ? 15 : 14,
+                color: const Color(0xFF8B7468),
+              ),
+            ),
+          ],
         ),
-      ],
-    );
-  }
-
-  Widget _buildStatCard(String label, int count, Color color) {
-    return ClayContainer(
-      depth: 4,
-      borderRadius: 24,
-      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(count.toString(), style: GoogleFonts.poppins(fontSize: 36, fontWeight: FontWeight.w300, color: color, height: 1.0)),
-          const SizedBox(height: 12),
-          Text(label, style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 14, color: const Color(0xFF6B7280))),
-        ],
       ),
     );
   }
 
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.coffee_rounded, size: 80, color: const Color(0xFFD1D5DB)),
-          const SizedBox(height: 20),
-          Text("No requests found", style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w300, color: const Color(0xFF6B7280))),
-          const SizedBox(height: 8),
-          Text("You're all caught up.", style: GoogleFonts.poppins(color: const Color(0xFF9CA3AF), fontWeight: FontWeight.w300)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFilterBar() {
-    return Container(
-      height: 50,
-      margin: const EdgeInsets.only(bottom: 16),
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        children: [
-          _filterChip("All", null),
-          _filterChip("Pending", RequestStatus.pending),
-          _filterChip("Active", RequestStatus.accepted),
-          _filterChip("Completed", RequestStatus.completed),
-        ],
-      ),
-    );
-  }
-
-  Widget _filterChip(String label, RequestStatus? status) {
-    bool isSelected = _currentFilter == status;
-    return Padding(
-      padding: const EdgeInsets.only(right: 12),
-      child: ChoiceChip(
-        label: Text(label),
-        selected: isSelected,
-        onSelected: (val) {
-          setState(() {
-            _currentFilter = status;
-          });
+  // ── Helper: Navigation ──────────────────────────────────────────────────
+  void _openFilteredScreen(BuildContext context, {required String title, required RequestStatus? filter}) {
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            FilteredRequestsScreen(statusFilter: filter, title: title),
+        transitionDuration: const Duration(milliseconds: 400),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          final tween = Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
+              .chain(CurveTween(curve: Curves.easeOutCubic));
+          return SlideTransition(position: animation.drive(tween), child: child);
         },
-        backgroundColor: Colors.transparent,
-        selectedColor: Theme.of(context).primaryColor,
-        checkmarkColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: isSelected ? BorderSide.none : const BorderSide(color: Color(0xFFD1D5DB)),
-        ),
-        elevation: isSelected ? 4 : 0,
-        shadowColor: Theme.of(context).primaryColor.withOpacity(0.5),
-        labelStyle: GoogleFonts.poppins(
-          color: isSelected ? Colors.white : const Color(0xFF6B7280),
-          fontWeight: isSelected ? FontWeight.w400 : FontWeight.w300,
-        ),
       ),
     );
   }

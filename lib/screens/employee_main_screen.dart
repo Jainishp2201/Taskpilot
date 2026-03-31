@@ -16,131 +16,259 @@ class EmployeeMainScreen extends StatefulWidget {
 
 class _EmployeeMainScreenState extends State<EmployeeMainScreen> {
   int _currentIndex = 0;
-  
+
+  // IndexedStack keeps all screens alive — no rebuild on tab switch
   final List<Widget> _screens = [
-    EmployeeHomeScreen(),
-    BillListScreen(),
-    Center(
-      child: ClayContainer(
-        padding: const EdgeInsets.all(32),
-        child: Text("Profile Settings \n(Coming Soon)", 
-          textAlign: TextAlign.center,
-          style: GoogleFonts.poppins(fontSize: 18, color: const Color(0xFF6B7280), fontWeight: FontWeight.w300),
-        )
-      )
-    ),
+    const EmployeeHomeScreen(),
+    const BillListScreen(),
+    const _ProfilePlaceholder(),
+  ];
+
+  static const List<_NavItem> _navItems = [
+    _NavItem(Icons.grid_view_rounded, Icons.grid_view_rounded, "Tasks"),
+    _NavItem(Icons.account_balance_wallet_outlined, Icons.account_balance_wallet_rounded, "Bills"),
+    _NavItem(Icons.person_outline_rounded, Icons.person_rounded, "Profile"),
   ];
 
   @override
   Widget build(BuildContext context) {
     final auth = context.read<AuthProvider>();
-    
+
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
         title: Text(
-          _currentIndex == 0 ? "Dashboard" : _currentIndex == 1 ? "Payments" : "Profile", 
-          style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w300, color: const Color(0xFF1F2937))
+          _currentIndex == 0
+              ? "Dashboard"
+              : _currentIndex == 1
+                  ? "Payments"
+                  : "Profile",
+          style: GoogleFonts.poppins(
+            fontSize: 22,
+            fontWeight: FontWeight.w300,
+            color: const Color(0xFF2D201A),
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.logout_rounded, color: const Color(0xFF4B5563)),
-            onPressed: () {
-              auth.logout();
-              Navigator.of(context).pushReplacement(
-                PageRouteBuilder(
-                  pageBuilder: (context, animation, secondaryAnimation) => const LoginScreen(),
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                    var curve = Curves.easeOutCirc;
-                    var tween = Tween(begin: 1.1, end: 1.0).chain(CurveTween(curve: curve));
-                    var fadeTween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: curve));
-                    return Opacity(
-                      opacity: animation.drive(fadeTween).value,
-                      child: Transform.scale(
-                        scale: animation.drive(tween).value,
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: GestureDetector(
+              onTap: () {
+                auth.logout();
+                Navigator.of(context).pushReplacement(
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const LoginScreen(),
+                    transitionDuration: const Duration(milliseconds: 500),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      final tween = Tween(begin: 0.0, end: 1.0)
+                          .chain(CurveTween(curve: Curves.easeOutExpo));
+                      return FadeTransition(
+                        opacity: animation.drive(tween),
                         child: child,
-                      ),
-                    );
-                  },
-                )
-              );
-            },
-            tooltip: "Logout",
+                      );
+                    },
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEDE8E4),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFC3B5AC).withOpacity(0.7),
+                      blurRadius: 8,
+                      offset: const Offset(3, 3),
+                    ),
+                    const BoxShadow(
+                      color: Colors.white,
+                      blurRadius: 8,
+                      offset: Offset(-3, -3),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.logout_rounded,
+                  color: Color(0xFF5C4A40),
+                  size: 20,
+                ),
+              ),
+            ),
           ),
         ],
       ),
-      body: SafeArea(
-        bottom: false,
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 400),
-          switchInCurve: Curves.easeOutCubic,
-          switchOutCurve: Curves.easeInCubic,
-          transitionBuilder: (child, animation) {
-            final key = child.key as ValueKey<int>?;
-            final index = key?.value ?? 0;
-            
-            Alignment alignment = Alignment.bottomCenter;
-            if (index == 0) alignment = const Alignment(-0.6, 1.0);
-            if (index == 2) alignment = const Alignment(0.6, 1.0);
-            
-            return ScaleTransition(
-              scale: animation,
-              alignment: alignment,
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-          child: KeyedSubtree(
-            key: ValueKey(_currentIndex),
-            child: _screens[_currentIndex],
-          ),
-        ),
+
+      // ── IndexedStack: instant switching, all screens stay alive ──────────
+      body: IndexedStack(
+        index: _currentIndex,
+        sizing: StackFit.expand, // tight constraints → Column's Expanded works
+        children: _screens,
       ),
+
+      // ── Custom Floating Nav Dock ─────────────────────────────────────────
       bottomNavigationBar: SafeArea(
         child: Container(
-          margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+          margin: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-            color: const Color(0xFFE8EEF2), // Matches scaffold background
-            borderRadius: BorderRadius.circular(28),
+            color: const Color(0xFFEDE8E4),
+            borderRadius: BorderRadius.circular(32),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFC4D1DF).withOpacity(0.8),
+                color: const Color(0xFFC3B5AC).withOpacity(0.85),
                 blurRadius: 20,
-                offset: const Offset(10, 10),
+                offset: const Offset(8, 8),
               ),
               const BoxShadow(
                 color: Colors.white,
                 blurRadius: 20,
-                offset: Offset(-10, -10),
+                offset: Offset(-8, -8),
               ),
-            ]
+            ],
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(28),
-            child: BottomNavigationBar(
-              currentIndex: _currentIndex,
-              onTap: (index) => setState(() => _currentIndex = index),
-              backgroundColor: const Color(0xFFE8EEF2),
-              elevation: 0,
-              selectedItemColor: Theme.of(context).primaryColor,
-              unselectedItemColor: const Color(0xFF9CA3AF),
-              showSelectedLabels: true,
-              showUnselectedLabels: false,
-              selectedLabelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 13),
-              type: BottomNavigationBarType.fixed,
-              items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.dashboard_outlined), activeIcon: Icon(Icons.dashboard_rounded), label: "Tasks"),
-                BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet_outlined), activeIcon: Icon(Icons.account_balance_wallet_rounded), label: "Bills"),
-                BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person_rounded), label: "Profile"),
-              ],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(
+              _navItems.length,
+              (i) => _buildNavItem(i),
             ),
           ),
         ),
       ),
     );
   }
+
+  Widget _buildNavItem(int index) {
+    final item = _navItems[index];
+    final isSelected = _currentIndex == index;
+
+    return GestureDetector(
+      onTap: () => setState(() => _currentIndex = index),
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+        padding: EdgeInsets.symmetric(
+          horizontal: isSelected ? 20 : 14,
+          vertical: 11,
+        ),
+        decoration: BoxDecoration(
+          gradient: isSelected
+              ? const LinearGradient(
+                  colors: [Color(0xFFE8734A), Color(0xFFC9526A)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
+          color: isSelected ? null : Colors.transparent,
+          borderRadius: BorderRadius.circular(22),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFFE8734A).withOpacity(0.35),
+                    blurRadius: 14,
+                    offset: const Offset(0, 6),
+                    spreadRadius: -2,
+                  ),
+                ]
+              : [],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isSelected ? item.activeIcon : item.icon,
+              size: 20,
+              color: isSelected ? Colors.white : const Color(0xFF8B7468),
+            ),
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOutCubic,
+              child: isSelected
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(width: 8),
+                        Text(
+                          item.label,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 13,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Profile Placeholder ──────────────────────────────────────────────────────
+class _ProfilePlaceholder extends StatelessWidget {
+  const _ProfilePlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Center(
+        child: ClayContainer(
+          padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 32),
+          borderRadius: 28,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE8734A).withOpacity(0.08),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.person_outline_rounded,
+                  size: 40,
+                  color: Color(0xFFE8734A),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Profile",
+                style: GoogleFonts.poppins(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w300,
+                  color: const Color(0xFF2D201A),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                "Coming Soon",
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: const Color(0xFF8B7468),
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem {
+  final IconData icon;
+  final IconData activeIcon;
+  final String label;
+  const _NavItem(this.icon, this.activeIcon, this.label);
 }

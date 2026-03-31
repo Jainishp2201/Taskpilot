@@ -47,12 +47,12 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) => nextScreen,
+          transitionDuration: const Duration(milliseconds: 600),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            var curve = Curves.easeOutCirc;
+            var curve = Curves.easeOutExpo;
             var curveTween = CurveTween(curve: curve);
-            var scaleTween = Tween(begin: 0.9, end: 1.0).chain(curveTween);
+            var scaleTween = Tween(begin: 0.92, end: 1.0).chain(curveTween);
             var fadeTween = Tween(begin: 0.0, end: 1.0).chain(curveTween);
-
             return Opacity(
               opacity: animation.drive(fadeTween).value,
               child: Transform.scale(
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             );
           },
-        )
+        ),
       );
     } else {
       if (!mounted) return;
@@ -83,58 +83,133 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    // Header
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Taskpilot.", 
-                             style: GoogleFonts.poppins(fontSize: 48, fontWeight: FontWeight.w300, color: const Color(0xFF1F2937), letterSpacing: -1.5)),
-                        const SizedBox(height: 12),
-                        Text("Sign in to continue to your dashboard",
-                            style: GoogleFonts.poppins(fontSize: 16, color: const Color(0xFF6B7280), fontWeight: FontWeight.w300)),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Task",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 52,
+                                  fontWeight: FontWeight.w200,
+                                  color: const Color(0xFF2D201A),
+                                  letterSpacing: -2.0,
+                                ),
+                              ),
+                              TextSpan(
+                                text: "pilot",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 52,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFFE8734A),
+                                  letterSpacing: -2.0,
+                                ),
+                              ),
+                              TextSpan(
+                                text: ".",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 52,
+                                  fontWeight: FontWeight.w200,
+                                  color: const Color(0xFFE8734A),
+                                  letterSpacing: -2.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          "Sign in to continue to your dashboard",
+                          style: GoogleFonts.poppins(
+                            fontSize: 15,
+                            color: const Color(0xFF8B7468),
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 60),
+                    const SizedBox(height: 56),
+
+                    // Form
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         _buildRoleToggle(),
                         const SizedBox(height: 40),
                         _buildTextField(_usernameController, "Username", Icons.person_outline_rounded),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 20),
                         _buildTextField(_passwordController, "Password", Icons.lock_outline_rounded, obscure: true),
                       ],
                     ),
-                    const SizedBox(height: 60),
+                    const SizedBox(height: 52),
+
+                    // Login Button — gradient with arrow
                     Consumer<AuthProvider>(
                       builder: (context, auth, _) {
                         return GestureDetector(
                           onTap: auth.isLoading ? null : _handleLogin,
                           child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 150),
+                            duration: const Duration(milliseconds: 180),
                             alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(vertical: 22),
+                            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 32),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.circular(24),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Theme.of(context).primaryColor.withOpacity(0.4),
-                                  offset: const Offset(0, 12),
-                                  blurRadius: 20,
-                                ),
-                              ],
+                              gradient: LinearGradient(
+                                colors: auth.isLoading
+                                    ? [const Color(0xFFCFB5A8), const Color(0xFFCFB5A8)]
+                                    : [const Color(0xFFE8734A), const Color(0xFFC9526A)],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
+                              borderRadius: BorderRadius.circular(28),
+                              boxShadow: auth.isLoading
+                                  ? []
+                                  : [
+                                      BoxShadow(
+                                        color: const Color(0xFFE8734A).withOpacity(0.45),
+                                        offset: const Offset(0, 16),
+                                        blurRadius: 36,
+                                        spreadRadius: -6,
+                                      ),
+                                    ],
                             ),
                             child: auth.isLoading
                                 ? const SizedBox(
-                                    height: 24, width: 24, 
-                                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                                : Text("LOGIN",
-                                    style: GoogleFonts.poppins(
+                                    height: 24,
+                                    width: 24,
+                                    child: CircularProgressIndicator(
                                       color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w400,
-                                      letterSpacing: 2.0,
-                                    )),
+                                      strokeWidth: 2,
+                                    ))
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "SIGN IN",
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          letterSpacing: 4.0,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 20),
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.22),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(
+                                          Icons.arrow_forward_rounded,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                           ),
                         );
                       },
@@ -143,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             );
-          }
+          },
         ),
       ),
     );
@@ -151,31 +226,49 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildRoleToggle() {
     return Container(
-      height: 64,
+      height: 60,
       decoration: BoxDecoration(
-        color: const Color(0xFFE8EEF2),
-        borderRadius: BorderRadius.circular(32),
+        color: const Color(0xFFEDE8E4),
+        borderRadius: BorderRadius.circular(30),
         boxShadow: [
-          BoxShadow(color: const Color(0xFFC4D1DF).withOpacity(0.7), blurRadius: 10, offset: const Offset(4, 4)),
-          const BoxShadow(color: Colors.white, blurRadius: 10, offset: Offset(-4, -4)),
+          BoxShadow(
+            color: const Color(0xFFC3B5AC).withOpacity(0.7),
+            blurRadius: 10,
+            offset: const Offset(4, 4),
+          ),
+          const BoxShadow(
+            color: Colors.white,
+            blurRadius: 10,
+            offset: Offset(-4, -4),
+          ),
         ],
       ),
       child: Stack(
         children: [
           AnimatedAlign(
-            duration: const Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 320),
             curve: Curves.easeOutCirc,
-            alignment: _selectedRole == UserRole.employee ? Alignment.centerLeft : Alignment.centerRight,
+            alignment: _selectedRole == UserRole.employee
+                ? Alignment.centerLeft
+                : Alignment.centerRight,
             child: FractionallySizedBox(
               widthFactor: 0.5,
               heightFactor: 1.0,
               child: Container(
                 margin: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(26),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFE8734A), Color(0xFFC9526A)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(24),
                   boxShadow: [
-                    BoxShadow(color: const Color(0xFFD1D9E6).withOpacity(0.6), blurRadius: 10, offset: const Offset(0, 4)),
+                    BoxShadow(
+                      color: const Color(0xFFE8734A).withOpacity(0.35),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
                   ],
                 ),
               ),
@@ -189,12 +282,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   behavior: HitTestBehavior.opaque,
                   child: Center(
                     child: AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 320),
                       style: GoogleFonts.poppins(
-                        fontWeight: _selectedRole == UserRole.employee ? FontWeight.w500 : FontWeight.w300, 
-                        fontSize: 15, 
-                        letterSpacing: 1.5, 
-                        color: _selectedRole == UserRole.employee ? const Color(0xFF1F2937) : const Color(0xFF9CA3AF)
+                        fontWeight: _selectedRole == UserRole.employee
+                            ? FontWeight.w600
+                            : FontWeight.w300,
+                        fontSize: 13,
+                        letterSpacing: 1.8,
+                        color: _selectedRole == UserRole.employee
+                            ? Colors.white
+                            : const Color(0xFF8B7468),
                       ),
                       child: const Text("EMPLOYEE"),
                     ),
@@ -207,12 +304,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   behavior: HitTestBehavior.opaque,
                   child: Center(
                     child: AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 320),
                       style: GoogleFonts.poppins(
-                        fontWeight: _selectedRole == UserRole.party ? FontWeight.w500 : FontWeight.w300, 
-                        fontSize: 15, 
-                        letterSpacing: 1.5, 
-                        color: _selectedRole == UserRole.party ? const Color(0xFF1F2937) : const Color(0xFF9CA3AF)
+                        fontWeight: _selectedRole == UserRole.party
+                            ? FontWeight.w600
+                            : FontWeight.w300,
+                        fontSize: 13,
+                        letterSpacing: 1.8,
+                        color: _selectedRole == UserRole.party
+                            ? Colors.white
+                            : const Color(0xFF8B7468),
                       ),
                       child: const Text("PARTY"),
                     ),
@@ -226,32 +327,44 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String hint, IconData icon, {bool obscure = false}) {
+  Widget _buildTextField(
+    TextEditingController controller,
+    String hint,
+    IconData icon, {
+    bool obscure = false,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFD1D9E6).withOpacity(0.6),
+            color: const Color(0xFFCEBFB8).withOpacity(0.55),
             offset: const Offset(0, 8),
-            blurRadius: 16,
-          )
+            blurRadius: 18,
+          ),
         ],
       ),
       child: TextField(
         controller: controller,
         obscureText: obscure,
-        style: GoogleFonts.poppins(fontWeight: FontWeight.w400, color: const Color(0xFF374151), fontSize: 16),
+        style: GoogleFonts.poppins(
+          fontWeight: FontWeight.w400,
+          color: const Color(0xFF2D201A),
+          fontSize: 15,
+        ),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: GoogleFonts.poppins(color: const Color(0xFF9CA3AF), fontWeight: FontWeight.w300),
+          hintStyle: GoogleFonts.poppins(
+            color: const Color(0xFFB0A09A),
+            fontWeight: FontWeight.w300,
+          ),
           prefixIcon: Padding(
-            padding: const EdgeInsets.only(left: 24, right: 16),
-            child: Icon(icon, color: const Color(0xFF9CA3AF), size: 24),
+            padding: const EdgeInsets.only(left: 22, right: 14),
+            child: Icon(icon, color: const Color(0xFFB0A09A), size: 22),
           ),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
         ),
       ),
     );

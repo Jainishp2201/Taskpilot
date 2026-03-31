@@ -174,10 +174,10 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text("Task Details", style: GoogleFonts.poppins(fontWeight: FontWeight.w300, color: const Color(0xFF1F2937))),
+        title: Text("Task Details", style: GoogleFonts.poppins(fontWeight: FontWeight.w300, color: const Color(0xFF2D201A))),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Color(0xFF374151)),
+        iconTheme: const IconThemeData(color: Color(0xFF4A3028)),
       ),
       body: SafeArea(
         bottom: false,
@@ -199,11 +199,11 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                 ],
               ),
               const SizedBox(height: 32),
-              Text(req.partyName, style: GoogleFonts.poppins(fontSize: 36, fontWeight: FontWeight.w300, color: const Color(0xFF1F2937), letterSpacing: -1.0)),
+              Text(req.partyName, style: GoogleFonts.poppins(fontSize: 36, fontWeight: FontWeight.w300, color: const Color(0xFF2D201A), letterSpacing: -1.0)),
               const SizedBox(height: 12),
-              Text(DateFormat('EEEE, dd MMMM yyyy').format(req.dateTime), style: GoogleFonts.poppins(color: const Color(0xFF6B7280), fontSize: 16, fontWeight: FontWeight.w300)),
+              Text(DateFormat('EEEE, dd MMMM yyyy').format(req.dateTime), style: GoogleFonts.poppins(color: const Color(0xFF8B7468), fontSize: 16, fontWeight: FontWeight.w300)),
               const SizedBox(height: 4),
-              Text(DateFormat('hh:mm a').format(req.dateTime), style: GoogleFonts.poppins(color: const Color(0xFF4B5563), fontSize: 16, fontWeight: FontWeight.w400)),
+              Text(DateFormat('hh:mm a').format(req.dateTime), style: GoogleFonts.poppins(color: const Color(0xFF4A3028), fontSize: 16, fontWeight: FontWeight.w400)),
               const SizedBox(height: 40),
               
               ClayContainer(
@@ -215,22 +215,22 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                     _detailItem(Icons.local_shipping_rounded, "Type", req.type),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20.0),
-                      child: Divider(color: const Color(0xFFE5E7EB), thickness: 2),
+                      child: Divider(color: const Color(0xFFDDD3CE), thickness: 1.5),
                     ),
                     _detailItem(Icons.notes_rounded, "Notes", req.note == null || req.note!.isEmpty ? "No internal notes." : req.note!),
                     if (req.photoPath != null) ...[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 20.0),
-                        child: Divider(color: const Color(0xFFE5E7EB), thickness: 2),
+                        child: Divider(color: const Color(0xFFDDD3CE), thickness: 1.5),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.verified_rounded, color: const Color(0xFF9CA3AF), size: 24),
+                              Icon(Icons.verified_rounded, color: const Color(0xFFB0A09A), size: 22),
                               const SizedBox(width: 16),
-                              Text("Proof of Completion", style: GoogleFonts.poppins(color: const Color(0xFF6B7280), fontSize: 14, fontWeight: FontWeight.w400)),
+                              Text("Proof of Completion", style: GoogleFonts.poppins(color: const Color(0xFF8B7468), fontSize: 13, fontWeight: FontWeight.w400)),
                             ],
                           ),
                           const SizedBox(height: 16),
@@ -258,17 +258,22 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                     alignment: Alignment.center,
                     padding: const EdgeInsets.symmetric(vertical: 22),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFE8734A), Color(0xFFC9526A)],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: Theme.of(context).primaryColor.withOpacity(0.3),
-                          offset: const Offset(0, 10),
-                          blurRadius: 15,
+                          color: const Color(0xFFE8734A).withOpacity(0.35),
+                          offset: const Offset(0, 12),
+                          blurRadius: 20,
+                          spreadRadius: -4,
                         ),
                       ],
                     ),
-                    child: Text("ACCEPT TASK", style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 16, letterSpacing: 1.5)),
+                    child: Text("ACCEPT TASK", style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 14, letterSpacing: 2.0)),
                   ),
                 ),
                 const SizedBox(height: 48),
@@ -281,13 +286,13 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                     alignment: Alignment.center,
                     padding: const EdgeInsets.symmetric(vertical: 22),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF10B981),
+                      color: const Color(0xFF5B9E7A),
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF10B981).withOpacity(0.3),
-                          offset: const Offset(0, 10),
-                          blurRadius: 15,
+                          color: const Color(0xFF5B9E7A).withOpacity(0.35),
+                          offset: const Offset(0, 12),
+                          blurRadius: 20,
                         ),
                       ],
                     ),
@@ -296,7 +301,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                       children: [
                         const Icon(Icons.camera_alt_rounded, color: Colors.white),
                         const SizedBox(width: 12),
-                        Text("COMPLETE TASK", style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 16, letterSpacing: 1.5)),
+                        Text("COMPLETE TASK", style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w400, fontSize: 15, letterSpacing: 2.0)),
                       ],
                     ),
                   ),
@@ -314,15 +319,15 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: const Color(0xFF9CA3AF), size: 28),
+        Icon(icon, color: const Color(0xFFB0A09A), size: 26),
         const SizedBox(width: 20),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: GoogleFonts.poppins(color: const Color(0xFF6B7280), fontSize: 14, fontWeight: FontWeight.w300)),
+              Text(label, style: GoogleFonts.poppins(color: const Color(0xFF8B7468), fontSize: 13, fontWeight: FontWeight.w300)),
               const SizedBox(height: 6),
-              Text(value, style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 18, color: const Color(0xFF374151))),
+              Text(value, style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 17, color: const Color(0xFF2D201A))),
             ],
           ),
         ),

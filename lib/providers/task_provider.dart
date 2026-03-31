@@ -9,6 +9,7 @@ class TaskProvider extends ChangeNotifier {
       partyName: "Diamond Traders",
       dateTime: DateTime.now().subtract(const Duration(hours: 2)),
       status: RequestStatus.pending,
+      note: "Handle with care — fragile items.",
     ),
     RequestModel(
       id: "R2",
@@ -16,6 +17,7 @@ class TaskProvider extends ChangeNotifier {
       dateTime: DateTime.now().subtract(const Duration(days: 1)),
       status: RequestStatus.accepted,
       acceptedBy: "emp1",
+      note: "Collect from reception desk.",
     ),
     RequestModel(
       id: "R3",
@@ -23,6 +25,14 @@ class TaskProvider extends ChangeNotifier {
       dateTime: DateTime.now().subtract(const Duration(days: 2)),
       status: RequestStatus.completed,
       acceptedBy: "emp1",
+      note: "Delivered to warehouse B.",
+    ),
+    RequestModel(
+      id: "R4",
+      partyName: "party1",
+      dateTime: DateTime.now().subtract(const Duration(hours: 5)),
+      status: RequestStatus.pending,
+      note: "First demo pickup request.",
     ),
   ];
 

@@ -21,9 +21,7 @@ class ClayContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final baseColor = color ?? Theme.of(context).scaffoldBackgroundColor;
-    
-    // Claymorphism uses two shadows: a light top-left and a dark bottom-right
-    // to give the illusion of a solid 3D object pushing out of the surface.
+
     return Container(
       margin: margin,
       padding: padding,
@@ -31,14 +29,14 @@ class ClayContainer extends StatelessWidget {
         color: baseColor,
         borderRadius: BorderRadius.circular(borderRadius),
         boxShadow: [
-          // Darker shadow on bottom right
+          // Warm dark shadow — bottom-right
           BoxShadow(
-            color: const Color(0xFFC4D1DF).withOpacity(0.8), // darker grey-blue
+            color: const Color(0xFFC3B5AC).withOpacity(0.9),
             offset: Offset(depth / 2, depth / 2),
             blurRadius: depth,
             spreadRadius: 1,
           ),
-          // Lighter shadow on top left
+          // White highlight — top-left
           BoxShadow(
             color: Colors.white,
             offset: Offset(-depth / 2, -depth / 2),

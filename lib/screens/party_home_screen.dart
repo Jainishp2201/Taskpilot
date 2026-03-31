@@ -85,12 +85,12 @@ class _PartyHomeScreenState extends State<PartyHomeScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text("Schedule", style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w300, color: const Color(0xFF1F2937))),
+        title: Text("Schedule", style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w300, color: const Color(0xFF2D201A))),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout_rounded, color: Color(0xFF4B5563)),
+            icon: const Icon(Icons.logout_rounded, color: Color(0xFF5C4A40)),
             onPressed: () {
               auth.logout();
               Navigator.of(context).pushReplacement(
@@ -121,9 +121,9 @@ class _PartyHomeScreenState extends State<PartyHomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text("Create a Pickup", style: GoogleFonts.poppins(fontSize: 36, fontWeight: FontWeight.w300, color: const Color(0xFF1F2937), letterSpacing: -1.0)),
+              Text("Create a Pickup", style: GoogleFonts.poppins(fontSize: 36, fontWeight: FontWeight.w300, color: const Color(0xFF2D201A), letterSpacing: -1.0)),
               const SizedBox(height: 8),
-              Text("Request a new pickup from your location.", style: GoogleFonts.poppins(color: const Color(0xFF6B7280), fontSize: 16, fontWeight: FontWeight.w300)),
+              Text("Request a new pickup from your location.", style: GoogleFonts.poppins(color: const Color(0xFF8B7468), fontSize: 16, fontWeight: FontWeight.w300)),
               const SizedBox(height: 36),
               
               ClayContainer(
@@ -135,7 +135,7 @@ class _PartyHomeScreenState extends State<PartyHomeScreen> {
                   children: [
                     _buildReadOnlyField("Business Name", auth.user?.username ?? ""),
                     const SizedBox(height: 24),
-                    Text("Schedule Time", style: GoogleFonts.poppins(color: const Color(0xFF6B7280), fontSize: 13, fontWeight: FontWeight.w400)),
+                    Text("Schedule Time", style: GoogleFonts.poppins(color: const Color(0xFF8B7468), fontSize: 13, fontWeight: FontWeight.w400)),
                     const SizedBox(height: 12),
                     GestureDetector(
                       onTap: _pickDateTime,
@@ -145,14 +145,14 @@ class _PartyHomeScreenState extends State<PartyHomeScreen> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: [
-                            BoxShadow(color: const Color(0xFFD1D9E6).withOpacity(0.5), offset: const Offset(0, 8), blurRadius: 16)
+                            BoxShadow(color: const Color(0xFFCEBFB8).withOpacity(0.55), offset: const Offset(0, 8), blurRadius: 16)
                           ],
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(DateFormat('dd MMM yyyy \n hh:mm a').format(_selectedDateTime), 
-                                style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 16, color: const Color(0xFF374151))),
+                                style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 16, color: const Color(0xFF2D201A))),
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.1), borderRadius: BorderRadius.circular(16)),
@@ -163,7 +163,7 @@ class _PartyHomeScreenState extends State<PartyHomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 28),
-                    Text("Instructions", style: GoogleFonts.poppins(color: const Color(0xFF6B7280), fontSize: 13, fontWeight: FontWeight.w400)),
+                    Text("Instructions", style: GoogleFonts.poppins(color: const Color(0xFF8B7468), fontSize: 13, fontWeight: FontWeight.w400)),
                     const SizedBox(height: 12),
                     Container(
                       decoration: BoxDecoration(
@@ -176,10 +176,10 @@ class _PartyHomeScreenState extends State<PartyHomeScreen> {
                       child: TextField(
                         controller: _noteController,
                         maxLines: 3,
-                        style: GoogleFonts.poppins(fontWeight: FontWeight.w400, color: const Color(0xFF374151), fontSize: 15),
+                        style: GoogleFonts.poppins(fontWeight: FontWeight.w400, color: const Color(0xFF2D201A), fontSize: 15),
                         decoration: InputDecoration(
                           hintText: "Add specific details...",
-                          hintStyle: GoogleFonts.poppins(color: const Color(0xFF9CA3AF), fontWeight: FontWeight.w300),
+                          hintStyle: GoogleFonts.poppins(color: const Color(0xFFB0A09A), fontWeight: FontWeight.w300),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.all(24),
                         ),
@@ -210,14 +210,14 @@ class _PartyHomeScreenState extends State<PartyHomeScreen> {
                 ),
               ),
               const SizedBox(height: 56),
-              Text("Recent Pickups", style: GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.w300, color: const Color(0xFF1F2937))),
+              Text("Recent Pickups", style: GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.w300, color: const Color(0xFF2D201A))),
               const SizedBox(height: 24),
               
               if (requests.isEmpty)
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.all(32.0),
-                    child: Text("No requests created yet. Schedule your first pickup above!", textAlign: TextAlign.center, style: GoogleFonts.poppins(color: const Color(0xFF6B7280), fontWeight: FontWeight.w300, fontSize: 16)),
+                    child: Text("No requests created yet. Schedule your first pickup above!", textAlign: TextAlign.center, style: GoogleFonts.poppins(color: const Color(0xFF8B7468), fontWeight: FontWeight.w300, fontSize: 16)),
                   ),
                 )
               else
@@ -245,9 +245,9 @@ class _PartyHomeScreenState extends State<PartyHomeScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(req.type.toUpperCase(), style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 16, color: const Color(0xFF374151))),
+                                  Text(req.type.toUpperCase(), style: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 16, color: const Color(0xFF2D201A))),
                                   const SizedBox(height: 4),
-                                  Text(DateFormat('MMM dd • hh:mm a').format(req.dateTime), style: GoogleFonts.poppins(color: const Color(0xFF6B7280), fontSize: 14, fontWeight: FontWeight.w300)),
+                                  Text(DateFormat('MMM dd • hh:mm a').format(req.dateTime), style: GoogleFonts.poppins(color: const Color(0xFF8B7468), fontSize: 14, fontWeight: FontWeight.w300)),
                                 ],
                               ),
                             ),
@@ -269,16 +269,16 @@ class _PartyHomeScreenState extends State<PartyHomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.poppins(color: const Color(0xFF6B7280), fontSize: 13, fontWeight: FontWeight.w400)),
+        Text(label, style: GoogleFonts.poppins(color: const Color(0xFF8B7468), fontSize: 13, fontWeight: FontWeight.w400)),
         const SizedBox(height: 12),
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
           decoration: BoxDecoration(
-            color: const Color(0xFFE8EEF2), // Soft inset feel
+            color: const Color(0xFFEDE8E4),
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
-              BoxShadow(color: const Color(0xFFC4D1DF).withOpacity(0.6), blurRadius: 10, offset: const Offset(4, 4)),
+              BoxShadow(color: const Color(0xFFC3B5AC).withOpacity(0.65), blurRadius: 10, offset: const Offset(4, 4)),
               const BoxShadow(color: Colors.white, blurRadius: 10, offset: Offset(-4, -4)),
             ],
           ),
@@ -288,7 +288,7 @@ class _PartyHomeScreenState extends State<PartyHomeScreen> {
                 Icon(icon, size: 24, color: const Color(0xFF9CA3AF)),
                 const SizedBox(width: 16),
               ],
-              Text(value, style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 16, color: const Color(0xFF374151))),
+              Text(value, style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 16, color: const Color(0xFF2D201A))),
             ],
           ),
         ),

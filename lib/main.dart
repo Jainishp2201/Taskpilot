@@ -27,25 +27,25 @@ class TaskpilotApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFFE8EEF2), // Solid clay base background
+        scaffoldBackgroundColor: const Color(0xFFEDE8E4), // Warm cream clay
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF6366F1), // Indigo primary
-          primary: const Color(0xFF6366F1),
-          surface: const Color(0xFFE8EEF2),
+          seedColor: const Color(0xFFE8734A), // Warm Coral
+          primary: const Color(0xFFE8734A),
+          surface: const Color(0xFFEDE8E4),
         ),
         textTheme: GoogleFonts.poppinsTextTheme(),
         appBarTheme: AppBarTheme(
-          backgroundColor: const Color(0xFFE8EEF2),
+          backgroundColor: const Color(0xFFEDE8E4),
           elevation: 0,
           titleTextStyle: GoogleFonts.poppins(
-            color: Colors.black87,
+            color: const Color(0xFF2D201A),
             fontSize: 22,
             fontWeight: FontWeight.w700,
           ),
-          iconTheme: const IconThemeData(color: Colors.black87),
+          iconTheme: const IconThemeData(color: Color(0xFF2D201A)),
         ),
         cardTheme: CardThemeData(
-          color: const Color(0xFFE8EEF2),
+          color: const Color(0xFFEDE8E4),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),

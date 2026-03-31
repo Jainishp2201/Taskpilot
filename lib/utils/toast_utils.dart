@@ -6,43 +6,62 @@ class ToastUtils {
     final overlay = Overlay.of(context);
     final overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        top: MediaQuery.of(context).padding.top + 20,
-        left: 20,
-        right: 20,
+        bottom: MediaQuery.of(context).padding.bottom + 110,
+        left: 28,
+        right: 28,
         child: Material(
           color: Colors.transparent,
           child: TweenAnimationBuilder<double>(
             tween: Tween(begin: 0.0, end: 1.0),
-            duration: const Duration(milliseconds: 400),
+            duration: const Duration(milliseconds: 480),
             curve: Curves.easeOutBack,
             builder: (context, value, child) {
               return Transform.translate(
-                offset: Offset(0, -50 * (1 - value)),
+                offset: Offset(0, 28 * (1 - value)),
                 child: Opacity(
                   opacity: value.clamp(0.0, 1.0),
                   child: Center(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
                       decoration: BoxDecoration(
-                        color: (isError ? const Color(0xFFE8414A) : const Color(0xFF00B87A)).withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(16),
+                        color: const Color(0xFF2D201A),
+                        borderRadius: BorderRadius.circular(50),
                         boxShadow: [
                           BoxShadow(
-                            color: (isError ? const Color(0xFFE8414A) : const Color(0xFF00B87A)).withOpacity(0.3),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
+                            color: Colors.black.withOpacity(0.20),
+                            blurRadius: 28,
+                            offset: const Offset(0, 10),
+                            spreadRadius: -6,
                           ),
                         ],
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(isError ? Icons.error_outline : Icons.check_circle_outline, color: Colors.white, size: 20),
-                          const SizedBox(width: 12),
+                          Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: isError
+                                  ? const Color(0xFFD4524A).withOpacity(0.22)
+                                  : const Color(0xFF5B9E7A).withOpacity(0.22),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              isError ? Icons.close_rounded : Icons.check_rounded,
+                              color: isError ? const Color(0xFFD4524A) : const Color(0xFF5B9E7A),
+                              size: 13,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
                           Flexible(
                             child: Text(
                               message,
-                              style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+                              style: GoogleFonts.poppins(
+                                color: Colors.white.withOpacity(0.92),
+                                fontWeight: FontWeight.w300,
+                                fontSize: 13,
+                                letterSpacing: 0.2,
+                              ),
                             ),
                           ),
                         ],
@@ -58,7 +77,7 @@ class ToastUtils {
     );
 
     overlay.insert(overlayEntry);
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(milliseconds: 3200), () {
       if (overlayEntry.mounted) {
         overlayEntry.remove();
       }
